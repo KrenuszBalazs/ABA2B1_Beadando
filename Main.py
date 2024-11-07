@@ -29,8 +29,7 @@ def get_player_names():
 def create_game_board():
     status_label.config(text=f"{current_player} következik!")
     for i in range(9):
-        button = tk.Button(root, text="", font="Helvetica 20 bold", width=5, height=2,
-                           command=lambda i=i: make_move(i))
+        button = tk.Button(root, text="", font="Helvetica 20 bold", width=5, height=2, command=lambda i=i: make_move(i))
         button.grid(row=i // 3, column=i % 3)
         buttons.append(button)
 
