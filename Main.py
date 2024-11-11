@@ -1,153 +1,140 @@
 import tkinter as tk
 from tkinter import messagebox
 
-
-# Játék fő osztálya "KBP" monogrammal
-class KBP_Jatek:
-    def __init__(self, ablak):
-        # Játék változók kezdeti beállítása
-        self.ablak = ablak
-        self.jatekos1_nev = ""
-        self.jatekos2_nev = ""
-        self.aktualis_jatekos = ""
-        self.nyertes = None
-        self.tabla = [""] * 9
-        self.gombok = []  # Gombok listája a játéktáblához
-
-        # Fő játék státusz kijelző
-        self.statusz_label = tk.Label(self.ablak, text="", font="Helvetica 14")
-        self.statusz_label.grid(row=3, column=0, columnspan=3)
-
-        # Kezdő névbekérő ablak létrehozása
-        self.KBP_nevbekero_ablak()
-
-    # Névbekérő ablak létrehozása
-    def KBP_nevbekero_ablak(self):
-        # Névbekérő ablak középre helyezése és dizájn
-        self.nev_ablak = tk.Toplevel(self.ablak)
-        self.nev_ablak.title("Játékosok Neve")
-        self.nev_ablak.configure(bg="white")
-        self.KBP_ablak_kozepre(self.nev_ablak, 300, 200)
-
-        # Címsor beállítása
-        tk.Label(self.nev_ablak, text="Amőba", font="Helvetica 16 bold", bg="white", fg="black").pack(pady=10)
-
-        # Játékos 1 nevének bekérése
-        tk.Label(self.nev_ablak, text="Első játékos neve:", bg="white", fg="black").pack()
-        self.jatekos1_mezo = tk.Entry(self.nev_ablak)
-        self.jatekos1_mezo.pack()
-
-        # Játékos 2 nevének bekérése
-        tk.Label(self.nev_ablak, text="Második játékos neve:", bg="white", fg="black").pack()
-        self.jatekos2_mezo = tk.Entry(self.nev_ablak)
-        self.jatekos2_mezo.pack()
-
-        # Kezdés gomb
-        tk.Button(self.nev_ablak, text="Kezdés", command=self.KBP_nev_bekero).pack(pady=10)
-
-    # Játékos nevének bekérése és a játéktábla létrehozása
-    def KBP_nev_bekero(self):
-        self.jatekos1_nev = self.jatekos1_mezo.get()
-        self.jatekos2_nev = self.jatekos2_mezo.get()
-        self.aktualis_jatekos = self.jatekos1_nev
-
-        # Névbekérő ablak bezárása
-        self.nev_ablak.destroy()
-
-        # Fő játék ablak középre helyezése
-        self.KBP_ablak_kozepre(self.ablak, 300, 330)
-        self.KBP_jatek_tabla()
-
-    # Játéktábla és gombok létrehozása
-    def KBP_jatek_tabla(self):
-        self.statusz_label.config(text=f"{self.aktualis_jatekos} következik!")
-        for i in range(9):
-            gomb = tk.Button(self.ablak, text="", font="Helvetica 20 bold", width=5, height=2,
-                             command=self.KBP_gomb_parancs(i))
-            gomb.grid(row=i // 3, column=i % 3)
-            self.gombok.append(gomb)
-
-    # Gomb parancsának beállítása
-    def KBP_gomb_parancs(self, index):
-        return lambda: self.KBP_lepes(index)
-
-    # Lépés végrehajtása
-    def KBP_lepes(self, i):
-        if self.tabla[i] == "" and not self.nyertes:
-            if self.aktualis_jatekos == self.jatekos1_nev:
-                self.tabla[i] = "X"
-                self.gombok[i].config(text="X", fg="red")
-            else:
-                self.tabla[i] = "O"
-                self.gombok[i].config(text="O", fg="blue")
-
-            # Győzelem vagy döntetlen ellenőrzése
-            if self.KBP_gyoztes_ellenorzes():
-                self.nyertes = self.aktualis_jatekos
-                self.KBP_eredmeny_mentes()
-                self.KBP_jatek_vege(f"{self.aktualis_jatekos} nyert!")
-            elif "" not in self.tabla:
-                self.nyertes = "Döntetlen"
-                self.KBP_eredmeny_mentes()
-                self.KBP_jatek_vege("Döntetlen!")
-            else:
-                # Játékos váltás
-                self.aktualis_jatekos = self.jatekos1_nev if self.aktualis_jatekos == self.jatekos2_nev else self.jatekos2_nev
-                self.statusz_label.config(text=f"{self.aktualis_jatekos} következik!")
-
-    # Győzelem ellenőrzése
-    def KBP_gyoztes_ellenorzes(self):
-        nyero_kombinaciok = [(0, 1, 2), (3, 4, 5), (6, 7, 8),  # Sorok
-                             (0, 3, 6), (1, 4, 7), (2, 5, 8),  # Oszlopok
-                             (0, 4, 8), (2, 4, 6)]  # Átlók
-
-        for (x, y, z) in nyero_kombinaciok:
-            if self.tabla[x] == self.tabla[y] == self.tabla[z] and self.tabla[x] != "":
-                return True
-        return False
-
-    # Eredmény mentése fájlba
-    def KBP_eredmeny_mentes(self):
-        with open("amoba_eredmenyek.txt", "a", encoding="utf-8") as file:
-            if self.nyertes == "Döntetlen":
-                file.write(f"{self.jatekos1_nev} vs {self.jatekos2_nev} - Döntetlen\n")
-            else:
-                file.write(f"{self.jatekos1_nev} vs {self.jatekos2_nev} - {self.nyertes} nyert\n")
-
-    # Játék vége üzenet és új játék lehetőség
-    def KBP_jatek_vege(self, uzenet):
-        valasz = messagebox.askquestion("Játék vége", f"{uzenet}\nSzeretnétek új játékot kezdeni?")
-        if valasz == "yes":
-            self.KBP_jatek_ujrainditas()
-        else:
-            self.ablak.quit()
-
-    # Játék újraindítása
-    def KBP_jatek_ujrainditas(self):
-        self.tabla = [""] * 9
-        self.nyertes = None
-        self.aktualis_jatekos = self.jatekos1_nev
-        for gomb in self.gombok:
-            gomb.config(text="")
-        self.statusz_label.config(text=f"{self.aktualis_jatekos} következik!")
-
-    # Ablak középre helyezése és méret beállítása
-    def KBP_ablak_kozepre(self, ablak, szelesseg, magassag):
-        kepernyo_szelesseg = ablak.winfo_screenwidth()
-        kepernyo_magassag = ablak.winfo_screenheight()
-        x = (kepernyo_szelesseg // 2) - (szelesseg // 2)
-        y = (kepernyo_magassag // 2) - (magassag // 2)
-        ablak.geometry(f"{szelesseg}x{magassag}+{x}+{y}")
-        ablak.resizable(False, False)
-
-
 # Fő ablak létrehozása
-fo_ablak = tk.Tk()
-fo_ablak.title("Amőba játék")
-fo_ablak.withdraw()  # Fő ablak elrejtése kezdetben
+root = tk.Tk()
+root.title("Amőba játék")
+root.withdraw()  # A fő ablakot kezdetben elrejtjük
 
-# Játék inicializálása
-jatek = KBP_Jatek(fo_ablak)
+# Változók a játékosok nevének tárolására
+player1_name = ""
+player2_name = ""
+current_player = ""
+winner = None
+board = [""] * 9
+buttons = []  # Gombok listája a játéktáblához
 
-# Fő ablak futtatása
-fo_ablak.mainloop()
+# Játék kezdése előtt nevek bekérése
+def get_player_names():
+    global player1_name, player2_name, current_player
+    player1_name = player1_entry.get()
+    player2_name = player2_entry.get()
+    current_player = player1_name  # Az első játékos kezd
+
+    # Névbekérő ablak bezárása és fő játék indítása
+    name_window.destroy()
+    center_window(root, 300, 330)  # A játék ablak középre helyezése és fix méret beállítása
+    root.deiconify()  # Fő ablak megjelenítése
+    create_game_board()
+
+# Függvény a gombok létrehozásához és index átadásához
+def create_button_command(index):
+    return lambda: make_move(index)
+
+# Játék táblának és gomboknak a létrehozása
+def create_game_board():
+    status_label.config(text=f"{current_player} következik!")
+    for i in range(9):
+        button = tk.Button(root, text="", font="Helvetica 20 bold", width=5, height=2, command=create_button_command(i))
+        button.grid(row=i // 3, column=i % 3)
+        buttons.append(button)
+
+# Lépés végrehajtása
+def make_move(i):
+    global current_player, winner
+
+    if board[i] == "" and not winner:
+        if current_player == player1_name:
+            board[i] = "X"
+            buttons[i].config(text="X", fg="red")
+        else:
+            board[i] = "O"
+            buttons[i].config(text="O", fg="blue")
+
+        # Győzelem vagy döntetlen ellenőrzése
+        if check_winner():
+            winner = current_player
+            save_result()
+            show_end_game_message(f"{current_player} nyert!")
+        elif "" not in board:
+            winner = "Döntetlen"
+            save_result()
+            show_end_game_message("Döntetlen!")
+        else:
+            # Játékos váltás
+            current_player = player1_name if current_player == player2_name else player2_name
+            status_label.config(text=f"{current_player} következik!")
+
+# Győzelem ellenőrzése
+def check_winner():
+    win_conditions = [(0, 1, 2), (3, 4, 5), (6, 7, 8),  # Sorok
+                      (0, 3, 6), (1, 4, 7), (2, 5, 8),  # Oszlopok
+                      (0, 4, 8), (2, 4, 6)]  # Átlók
+
+    for (x, y, z) in win_conditions:
+        if board[x] == board[y] == board[z] and board[x] != "":
+            return True
+    return False
+
+# Eredmény mentése fájlba
+def save_result():
+    with open("amoba_eredmenyek.txt", "a", encoding="utf-8") as file:
+        if winner == "Döntetlen":
+            file.write(f"{player1_name} vs {player2_name} - Döntetlen\n")
+        else:
+            file.write(f"{player1_name} vs {player2_name} - {winner} nyert\n")
+
+# Játék újraindítása
+def reset_game():
+    global board, winner, current_player
+    board = [""] * 9
+    winner = None
+    current_player = player1_name
+    for button in buttons:
+        button.config(text="")
+    status_label.config(text=f"{current_player} következik!")
+
+# Játék vége üzenet és választási lehetőségek
+def show_end_game_message(message):
+    response = messagebox.askquestion("Játék vége", f"{message}\nSzeretnétek új játékot kezdeni?")
+    if response == "yes":
+        reset_game()  # Új játék indítása
+    else:
+        root.quit()  # Kilépés a játékból
+
+# Ablak középre igazítása
+def center_window(window, width, height):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width // 2) - (width // 2)
+    y = (screen_height // 2) - (height // 2)
+    window.geometry(f"{width}x{height}+{x}+{y}")
+    window.resizable(False, False)  # Ablak átméretezésének letiltása
+
+# Névbekérő ablak létrehozása és középre helyezése
+name_window = tk.Toplevel(root)
+name_window.title("Játékosok Neve")
+name_window.configure(bg="white")
+center_window(name_window, 300, 200)
+
+# Címsor
+title_label = tk.Label(name_window, text="Amőba", font="Helvetica 16 bold", bg="white", fg="black")
+title_label.pack(pady=10)
+
+# Beviteli mezők a nevekhez
+tk.Label(name_window, text="Első játékos neve:", bg="white", fg="black").pack()
+player1_entry = tk.Entry(name_window)
+player1_entry.pack()
+
+tk.Label(name_window, text="Második játékos neve:", bg="white", fg="black").pack()
+player2_entry = tk.Entry(name_window)
+player2_entry.pack()
+
+tk.Button(name_window, text="Kezdés", command=get_player_names).pack(pady=10)
+
+# Fő játék státusz kijelzője
+status_label = tk.Label(root, text="", font="Helvetica 14")
+status_label.grid(row=3, column=0, columnspan=3)
+
+# Fő ablak indítása
+root.mainloop()
