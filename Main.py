@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
 
-# Játék fő osztálya "KBP" monogrammal
 class KBP_Jatek:
     def __init__(self, ablak):
         # Játék változók kezdeti beállítása
         self.ablak = ablak
+        self.ablak.withdraw()  # Fő ablak elrejtése, amíg a nevek megadása nem történik meg
         self.jatekos1_nev = ""
         self.jatekos2_nev = ""
         self.aktualis_jatekos = ""
@@ -48,12 +48,17 @@ class KBP_Jatek:
     def KBP_nev_bekero(self):
         self.jatekos1_nev = self.jatekos1_mezo.get()
         self.jatekos2_nev = self.jatekos2_mezo.get()
+
+        # Ellenőrzés, hogy a nevek nem üresek-e
+        if not self.jatekos1_nev or not self.jatekos2_nev:
+            messagebox.showwarning("Figyelem", "Kérlek, add meg mindkét játékos nevét!")
+            return
+
         self.aktualis_jatekos = self.jatekos1_nev
 
-        # Névbekérő ablak bezárása
+        # Névbekérő ablak bezárása és a fő ablak megjelenítése
         self.nev_ablak.destroy()
-
-        # Fő játék ablak középre helyezése
+        self.ablak.deiconify()  # Fő ablak megjelenítése
         self.KBP_ablak_kozepre(self.ablak, 300, 330)
         self.KBP_jatek_tabla()
 
@@ -138,7 +143,6 @@ class KBP_Jatek:
         y = (kepernyo_magassag // 2) - (magassag // 2)
         ablak.geometry(f"{szelesseg}x{magassag}+{x}+{y}")
         ablak.resizable(False, False)
-
 
 # Fő ablak létrehozása
 fo_ablak = tk.Tk()

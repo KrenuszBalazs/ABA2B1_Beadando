@@ -9,22 +9,15 @@ Az Amőba egy kétszemélyes játék, amelyben a játékosok X vagy O jelet hely
 A cél az, hogy három egymás melletti szimbólumot helyezzenek el sorban, oszlopban, vagy átlósan. 
 A program menti az eredményeket és új játék indítását is lehetővé teszi.
 
-2. Modulok:
-
-tkinter: GUI kezelésére
-messagebox: Üzenetek megjelenítéséhez
-KBP_Jatek: Az egész játék fő logikája és kezelése
-
-3. Függvények és Osztályok:
-
-KBP_Jatek: fő játék osztály.
-KBP_nevbekero_ablak: a névbekérő ablakot készíti elő.
-KBP_nev_bekero: játékos nevének bekérése.
-KBP_jatek_tabla: játéktábla létrehozása.
-KBP_gomb_parancs: gomb parancs létrehozása.
-KBP_lepes: lépések végrehajtása.
-KBP_gyoztes_ellenorzes: győzelem ellenőrzése.
-KBP_eredmeny_mentes: eredmények mentése.
-KBP_jatek_vege: játék vége üzenet.
-KBP_jatek_ujrainditas: új játék indítása.
-KBP_ablak_kozepre: ablak középre helyezése.
+Modulok: tkinter, tkinter.messagebox
+Függvények és osztályok: Az KBP_AmobaJatek osztály tartalmazza a fő játéklogikát, 
+függvényei: KBP_nevbekero_ablak, 
+KBP_nev_ellenorzes, 
+KBP_jatek_tabla_keszitese, 
+KBP_gomb_funkcio, 
+KBP_lepes_vegrehajtasa, 
+KBP_gyoztes_ellenorzes, 
+KBP_eredmeny_mentes, 
+KBP_jatek_befejezes, 
+KBP_jatek_ujrainditasa, 
+KBP_ablak_kozepre.
