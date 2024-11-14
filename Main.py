@@ -18,15 +18,15 @@ class KBP_Jatek:
         self.statusz_label.grid(row=3, column=0, columnspan=3)
 
         # Kezdő névbekérő ablak létrehozása
-        self.KBP_nevbekero_ablak()
+        self.kbp_nevbekero_ablak()
 
     # Névbekérő ablak létrehozása
-    def KBP_nevbekero_ablak(self):
+    def kbp_nevbekero_ablak(self):
         # Névbekérő ablak középre helyezése és dizájn
         self.nev_ablak = tk.Toplevel(self.ablak)
         self.nev_ablak.title("Játékosok Neve")
         self.nev_ablak.configure(bg="white")
-        self.KBP_ablak_kozepre(self.nev_ablak, 300, 200)
+        self.kbp_ablak_kozepre(self.nev_ablak, 300, 200)
 
         # Címsor beállítása
         tk.Label(self.nev_ablak, text="Amőba", font="Helvetica 16 bold", bg="white", fg="black").pack(pady=10)
@@ -42,10 +42,10 @@ class KBP_Jatek:
         self.jatekos2_mezo.pack()
 
         # Kezdés gomb
-        tk.Button(self.nev_ablak, text="Kezdés", command=self.KBP_nev_ellenorzes).pack(pady=10)
+        tk.Button(self.nev_ablak, text="Kezdés", command=self.kbp_nev_ellenorzes).pack(pady=10)
 
     # Játékos nevének bekérése és a játéktábla létrehozása
-    def KBP_nev_ellenorzes(self):
+    def kbp_nev_ellenorzes(self):
         self.jatekos1_nev = self.jatekos1_mezo.get()
         self.jatekos2_nev = self.jatekos2_mezo.get()
 
@@ -59,24 +59,24 @@ class KBP_Jatek:
         # Névbekérő ablak bezárása és a fő ablak megjelenítése
         self.nev_ablak.destroy()
         self.ablak.deiconify()  # Fő ablak megjelenítése
-        self.KBP_ablak_kozepre(self.ablak, 300, 330)
-        self.KBP_jatek_tabla()
+        self.kbp_ablak_kozepre(self.ablak, 300, 330)
+        self.kbp_jatek_tabla()
 
     # Játéktábla és gombok létrehozása
-    def KBP_jatek_tabla(self):
+    def kbp_jatek_tabla(self):
         self.statusz_label.config(text=f"{self.aktualis_jatekos} következik!")
         for i in range(9):
             gomb = tk.Button(self.ablak, text="", font="Helvetica 20 bold", width=5, height=2,
-                             command=self.KBP_gomb_parancs(i))
+                             command=self.kbp_gomb_parancs(i))
             gomb.grid(row=i // 3, column=i % 3)
             self.gombok.append(gomb)
 
     # Gomb parancsának beállítása
-    def KBP_gomb_parancs(self, index):
-        return lambda: self.KBP_lepes(index)
+    def kbp_gomb_parancs(self, index):
+        return lambda: self.kbp_lepes(index)
 
     # Lépés végrehajtása
-    def KBP_lepes(self, i):
+    def kbp_lepes(self, i):
         if self.tabla[i] == "" and not self.nyertes:
             if self.aktualis_jatekos == self.jatekos1_nev:
                 self.tabla[i] = "X"
@@ -86,21 +86,21 @@ class KBP_Jatek:
                 self.gombok[i].config(text="O", fg="blue")  # O kék
 
             # Győzelem vagy döntetlen ellenőrzése
-            if self.KBP_gyoztes_ellenorzes():
+            if self.kbp_gyoztes_ellenorzes():
                 self.nyertes = self.aktualis_jatekos
-                self.KBP_eredmeny_mentes()
-                self.KBP_jatek_vege(f"{self.aktualis_jatekos} nyert!")
+                self.kbp_eredmeny_mentes()
+                self.kbp_jatek_vege(f"{self.aktualis_jatekos} nyert!")
             elif "" not in self.tabla:
                 self.nyertes = "Döntetlen"
-                self.KBP_eredmeny_mentes()
-                self.KBP_jatek_vege("Döntetlen!")
+                self.kbp_eredmeny_mentes()
+                self.kbp_jatek_vege("Döntetlen!")
             else:
                 # Játékos váltás
                 self.aktualis_jatekos = self.jatekos1_nev if self.aktualis_jatekos == self.jatekos2_nev else self.jatekos2_nev
                 self.statusz_label.config(text=f"{self.aktualis_jatekos} következik!")
 
     # Győzelem ellenőrzése
-    def KBP_gyoztes_ellenorzes(self):
+    def kbp_gyoztes_ellenorzes(self):
         nyero_kombinaciok = [(0, 1, 2), (3, 4, 5), (6, 7, 8),  # Sorok
                              (0, 3, 6), (1, 4, 7), (2, 5, 8),  # Oszlopok
                              (0, 4, 8), (2, 4, 6)]  # Átlók
@@ -111,7 +111,7 @@ class KBP_Jatek:
         return False
 
     # Eredmény mentése fájlba
-    def KBP_eredmeny_mentes(self):
+    def kbp_eredmeny_mentes(self):
         with open("amoba_eredmenyek.txt", "a", encoding="utf-8") as file:
             if self.nyertes == "Döntetlen":
                 file.write(f"{self.jatekos1_nev} vs {self.jatekos2_nev} - Döntetlen\n")
@@ -119,15 +119,15 @@ class KBP_Jatek:
                 file.write(f"{self.jatekos1_nev} vs {self.jatekos2_nev} - {self.nyertes} nyert\n")
 
     # Játék vége üzenet és új játék lehetőség
-    def KBP_jatek_vege(self, uzenet):
+    def kbp_jatek_vege(self, uzenet):
         valasz = messagebox.askquestion("Játék vége", f"{uzenet}\nSzeretnétek új játékot kezdeni?")
         if valasz == "yes":
-            self.KBP_jatek_ujrainditas()
+            self.kbp_jatek_ujrainditas()
         else:
             self.ablak.quit()
 
     # Játék újraindítása
-    def KBP_jatek_ujrainditas(self):
+    def kbp_jatek_ujrainditas(self):
         self.tabla = [""] * 9
         self.nyertes = None
         self.aktualis_jatekos = self.jatekos1_nev
@@ -136,7 +136,7 @@ class KBP_Jatek:
         self.statusz_label.config(text=f"{self.aktualis_jatekos} következik!")
 
     # Ablak középre helyezése és méret beállítása
-    def KBP_ablak_kozepre(self, ablak, szelesseg, magassag):
+    def kbp_ablak_kozepre(self, ablak, szelesseg, magassag):
         kepernyo_szelesseg = ablak.winfo_screenwidth()
         kepernyo_magassag = ablak.winfo_screenheight()
         x = (kepernyo_szelesseg // 2) - (szelesseg // 2)
