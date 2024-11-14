@@ -11,7 +11,8 @@ A program menti az eredményeket és új játék indítását is lehetővé tesz
 
 Modulok: tkinter, tkinter.messagebox
 Függvények és osztályok: Az KBP_AmobaJatek osztály tartalmazza a fő játéklogikát, 
-függvényei: KBP_nevbekero_ablak, 
+függvényei: 
+KBP_nevbekero_ablak, 
 KBP_nev_ellenorzes, 
 KBP_jatek_tabla_keszitese, 
 KBP_gomb_funkcio, 

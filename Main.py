@@ -42,10 +42,10 @@ class KBP_Jatek:
         self.jatekos2_mezo.pack()
 
         # Kezdés gomb
-        tk.Button(self.nev_ablak, text="Kezdés", command=self.KBP_nev_bekero).pack(pady=10)
+        tk.Button(self.nev_ablak, text="Kezdés", command=self.KBP_nev_ellenorzes).pack(pady=10)
 
     # Játékos nevének bekérése és a játéktábla létrehozása
-    def KBP_nev_bekero(self):
+    def KBP_nev_ellenorzes(self):
         self.jatekos1_nev = self.jatekos1_mezo.get()
         self.jatekos2_nev = self.jatekos2_mezo.get()
 
