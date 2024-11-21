@@ -66,6 +66,7 @@ class KBP_Jatek:
     def kbp_jatek_tabla(self):
         self.statusz_label.config(text=f"{self.aktualis_jatekos} következik!")
         for i in range(9):
+            # A gomb megnyomásakor a lambda kifejezés lefut, amely meghívja a kbp_lepes függvényt az adott gomb indexével.
             gomb = tk.Button(self.ablak, text="", font="Helvetica 20 bold", width=5, height=2,
                              command=self.kbp_gomb_parancs(i))
             gomb.grid(row=i // 3, column=i % 3)
@@ -74,6 +75,8 @@ class KBP_Jatek:
     # Gomb parancsának beállítása
     def kbp_gomb_parancs(self, index):
         return lambda: self.kbp_lepes(index)
+    #A lambda itt azért szükséges, mert a Tkinter gombok command paramétere nem fogad el paraméterezett függvényhívást közvetlenül.
+    #command=self.kbp_lepes(index) Hibás, azonnal meghívná a függvényt
 
     # Lépés végrehajtása
     def kbp_lepes(self, i):
@@ -105,8 +108,9 @@ class KBP_Jatek:
                              (0, 3, 6), (1, 4, 7), (2, 5, 8),  # Oszlopok
                              (0, 4, 8), (2, 4, 6)]  # Átlók
 
+        #Ellenőrzi, hogy mindhárom mezőben ugyanaz a jel van
         for (x, y, z) in nyero_kombinaciok:
-            if self.tabla[x] == self.tabla[y] == self.tabla[z] and self.tabla[x] != "":
+            if self.tabla[x] == self.tabla[y] == self.tabla[z] and self.tabla[x] != "":  #Ellenőrzi, hogy a mezők nem üresek
                 return True
         return False
 
@@ -141,6 +145,7 @@ class KBP_Jatek:
         kepernyo_magassag = ablak.winfo_screenheight()
         x = (kepernyo_szelesseg // 2) - (szelesseg // 2)
         y = (kepernyo_magassag // 2) - (magassag // 2)
+        #Az f jelzi, hogy a sztring formázott, azaz a sztring belsejében lévő kapcsos zárójelekben {} kifejezéseket helyettesítünk be.
         ablak.geometry(f"{szelesseg}x{magassag}+{x}+{y}")
         ablak.resizable(False, False)
 
