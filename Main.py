@@ -149,6 +149,7 @@ class KBP_Jatek:
         ablak.geometry(f"{szelesseg}x{magassag}+{x}+{y}")
         ablak.resizable(False, False)
 
+
 # Fő ablak létrehozása
 fo_ablak = tk.Tk()
 fo_ablak.title("Amőba játék")
